@@ -1,0 +1,252 @@
+#Простая авторизация
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+import math
+
+link = "http://suninjuly.github.io/find_link_text"
+
+try:
+    browser = webdriver.Chrome()
+    browser.get(link)
+    link2 = browser.find_element(By.LINK_TEXT,str(math.ceil(math.pow(math.pi, math.e)*10000)))
+    link2.click()
+    input1 = browser.find_element(By.NAME, "first_name").send_keys("Ivan")
+    input2 = browser.find_element(By.NAME, "last_name").send_keys("Petrov")
+    input3 = browser.find_element(By.NAME, "firstname").send_keys("Smolensk")
+    input4 = browser.find_element(By.ID, "country").send_keys("Russia")
+    button = browser.find_element(By.CSS_SELECTOR,"button.btn").click()
+
+
+
+
+
+finally:
+    # успеваем скопировать код за 30 секунд
+    time.sleep(30)
+    # закрываем браузер после всех манипуляций
+    browser.quit()
+
+
+#Код для автоматического написания шпаргалки по CSS селекторам и прочей дичи
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import cm
+import os
+
+# Укажи путь к файлу — просто имя, чтобы сохранить рядом со скриптом
+pdf_path = os.path.abspath("selenium_selectors_cheatsheet.pdf")
+
+
+c = canvas.Canvas(pdf_path, pagesize=A4)
+width, height = A4
+
+# Заголовок
+c.setFont("Helvetica-Bold", 16)
+c.drawCentredString(width / 2, height - 2 * cm, "Шпаргалка по CSS и XPath селекторам для Selenium")
+c.setFont("Helvetica", 10)
+
+y = height - 3 * cm
+
+def draw_section(title, items):
+    global y
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(2 * cm, y, title)
+    y -= 0.7 * cm
+    c.setFont("Helvetica", 10)
+    for selector, desc in items:
+        lines = f"{selector} — {desc}".split('\n')
+        for line in lines:
+            if y < 2 * cm:
+                c.showPage()
+                y = height - 2 * cm
+            c.drawString(2.5 * cm, y, line)
+            y -= 0.5 * cm
+    y -= 0.5 * cm
+
+# Контент
+content = [
+    ("CSS-селекторы", [
+        ("tag", "По тегу: div, input"),
+        ("#id", "По ID: #submit"),
+        (".class", "По классу: .btn"),
+        ("tag.class", "Тег с классом: button.btn"),
+        ("[attr='val']", "Атрибут: input[type='text']"),
+        ("parent child", "Вложенность: div span"),
+    ]),
+    ("XPath-селекторы", [
+        ("//tag", "Простой тег: //div"),
+        ("//tag[@attr='val']", "Атрибут: //input[@type='text']"),
+        ("//tag[text()='value']", "По тексту: //button[text()='OK']"),
+        ("contains(text(), 'часть')", "Частичное совпадение"),
+        ("..", "Родительский элемент"),
+    ]),
+    ("Selenium", [
+        ("find_element(By.ID, 'id')", "Поиск по ID"),
+        ("find_element(By.XPATH, '//tag')", "Поиск по XPath"),
+        ("find_element(By.CSS_SELECTOR, 'selector')", "Поиск по CSS"),
+    ]),
+]
+
+for section_title, section_items in content:
+    draw_section(section_title, section_items)
+
+c.save()
+print(f"Готово! Файл сохранён как {pdf_path}")
+
+
+# Код с прокручивание вниз сайта
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from math import sin, log
+import time
+
+# Функция вычисления
+def calc(x):
+    return str(log(abs(12 * sin(int(x)))))
+
+
+# Запуск браузера
+url = "https://suninjuly.github.io/execute_script.html"
+driver = webdriver.Chrome()
+driver.get(url)
+driver.execute_script("window.scrollBy(0, 150);")
+
+try:
+    # Считываем x
+    x_element = driver.find_element(By.ID, "input_value")
+    x = x_element.text
+    y = calc(x)
+
+    # Вводим ответ
+    answer_input = driver.find_element(By.ID, "answer")
+    answer_input.send_keys(y)
+
+
+    # Ставим галочку
+    checkbox = driver.find_element(By.ID, "robotCheckbox")
+    checkbox.click()
+
+    # Выбираем radiobutton
+    radiobutton = driver.find_element(By.ID, "robotsRule")
+    radiobutton.click()
+
+    # Отправляем форму
+    submit_button = driver.find_element(By.CSS_SELECTOR, "button.btn")
+    submit_button.click()
+
+    # Подождать немного, чтобы увидеть результат (например, alert)
+
+
+finally:
+    time.sleep(50)
+    driver.quit()
+
+#Работа с замедлением действий
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from math import sin, log
+import time
+import os
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+link = "http://suninjuly.github.io/explicit_wait2.html"
+web = webdriver.Chrome()
+web.get(link)
+
+
+def calc(x):
+    return str(log(abs(12 * sin(int(x)))))
+
+try:
+    WebDriverWait(web, 12).until(
+        EC.text_to_be_present_in_element((By.ID, "price"), "$100"))
+    button2 = web.find_element(By.ID, "book")
+    button2.click()
+
+    x_element = web.find_element(By.ID, "input_value")
+    x = x_element.text
+    y = calc(x)
+    # Вводим ответ
+    web.find_element(By.ID, "answer").send_keys(y)
+    # Нажимаем Submit
+    web.find_element(By.ID, "solve").click()
+
+finally:
+    time.sleep(3000)
+    quit()
+
+#Работа с переходом на другую страницу
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from math import sin, log
+import time
+import os
+from selenium import *
+
+
+link = "http://suninjuly.github.io/redirect_accept.html"
+web = webdriver.Chrome()
+web.get(link)
+web.implicitly_wait(5)
+
+def calc(x):
+    return str(log(abs(12 * sin(int(x)))))
+
+try:
+    first_window = web.window_handles[0]
+    troll = web.find_element(By.CSS_SELECTOR, "button.trollface")
+    troll.click()
+    new_window = web.window_handles[1]
+    web.switch_to.window(new_window)
+    x_element = web.find_element(By.ID, "input_value")
+    x = x_element.text
+    y = calc(x)
+    answer = web.find_element(By.ID, "answer")
+    answer.send_keys(y)
+    submit_button = web.find_element(By.CSS_SELECTOR, "button.btn")
+    submit_button.click()
+
+
+
+
+finally:
+    time.sleep(10000)
+    quit()
+
+#Работа с алертом
+confirm = web.switch_to.alert
+    confirm.accept() или confirm.dismiss()
+
+#Работа с открытием файла и получением абсалютного путя к файлу
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from math import sin, log
+import time
+import os
+
+
+url = "https://suninjuly.github.io/file_input.html"
+driver = webdriver.Chrome()
+driver.get(url)
+driver.execute_script("window.scrollBy(0, 150);")
+
+try:
+    first = driver.find_element(By.NAME, "firstname")
+    first.send_keys("Максим")
+    last = driver.find_element(By.NAME, "lastname")
+    last.send_keys("Бакланов")
+    email = driver.find_element(By.NAME, "email")
+    email.send_keys("baklanov.08@list.ru")
+    f = open("text.txt", "r", encoding="utf-8")
+    file = f.read()
+    file_path = os.path.abspath(file)
+    upload_element = driver.find_element(By.ID, "file")
+    upload_element.send_keys(file_path)
+    submit2 = driver.find_element(By.CSS_SELECTOR, "button.btn")
+    submit2.click()
+
+finally:
+    time.sleep(1000)
+    quit()
